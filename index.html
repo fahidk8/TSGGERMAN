@@ -1,0 +1,472 @@
+import React, { useState, useEffect } from 'react';
+import { 
+  Menu, X, ChevronRight, Droplet, Flame, Wheat, 
+  ShieldCheck, ArrowRight, CheckCircle2, Factory, FileText, 
+  Globe2, Phone, Mail, MapPin, Send
+} from 'lucide-react';
+
+const SITE_CONFIG = {
+  company: {
+    name: "Caspera Partners",
+    tagline: "International Petroleum Products & Commodities Introducing Desk",
+    email: "hello@casperapartners.com",
+    phone: "+90 530 915 56 81",
+    location: "Northern Cyprus (In Formation)",
+    disclaimer: "Caspera Partners operates exclusively as an introducing broker connecting qualified buyers with refinery-appointed representatives. We do not own products, hold refinery mandates, or handle client funds directly. All contracts and payments are executed directly between buyer and refinery seller of record."
+  },
+  nav: [
+    { label: "Home", href: "#home" },
+    { label: "About Us", href: "#about" },
+    { label: "Products", href: "#products" },
+    { label: "Our Process", href: "#process" },
+    { label: "Contact", href: "#contact" }
+  ],
+  products: [
+    {
+      name: "Jet A1 / TS-1 Kerosene",
+      category: "Aviation Fuel",
+      icon: "Droplet",
+      application: "Commercial aviation, passenger airlines, cargo transport, and military turbine-engine aircraft operations."
+    },
+    {
+      name: "EN590 Ultra-Low Sulfur Diesel (10 PPM)",
+      category: "Refined Distillate",
+      icon: "Droplet",
+      application: "Modern automotive diesel fleets, highway commercial transport, and municipal transit meeting low-emission environmental standards."
+    },
+    {
+      name: "D2 Diesel Gas Oil",
+      category: "Industrial Fuel",
+      icon: "Factory",
+      application: "Heavy industrial equipment, off-grid power generation generators, agricultural machinery, and marine diesel engines."
+    },
+    {
+      name: "Automotive Gas Oil (AGO)",
+      category: "Transport Fuel",
+      icon: "Droplet",
+      application: "Regional commercial trucking, transport logistics fleets, industrial generator power plants, and fuel station distribution networks."
+    },
+    {
+      name: "Gasoline / Mogas (89/92/95 RON)",
+      category: "Motor Fuel",
+      icon: "Droplet",
+      application: "Internal combustion passenger vehicles, consumer transportation, light commercial transport, and retail gas station networks."
+    },
+    {
+      name: "D6 Virgin Fuel Oil",
+      category: "Heavy Distillate",
+      icon: "Factory",
+      application: "Thermal power stations, large-scale industrial boilers, utility power generation, and heavy marine vessel propulsion."
+    },
+    {
+      name: "Mazut M100 / Heavy Fuel Oil",
+      category: "Residual Fuel Oil",
+      icon: "Factory",
+      application: "District heating plants, industrial furnace operations, utility steam generation, and heavy industrial refinery feedstock."
+    },
+    {
+      name: "Liquefied Natural Gas (LNG)",
+      category: "Natural Gas",
+      icon: "Flame",
+      application: "Base-load municipal power generation, industrial thermal applications, regional energy distribution, and clean energy transition infrastructure."
+    },
+    {
+      name: "Liquefied Petroleum Gas (LPG)",
+      category: "Hydrocarbon Gas",
+      icon: "Flame",
+      application: "Residential heating, commercial cooking fuel, industrial process heating, auto-gas applications, and petrochemical manufacturing feedstock."
+    },
+    {
+      name: "Bitumen / Asphalt (60/70, 80/100)",
+      category: "Industrial Petroleum",
+      icon: "Factory",
+      application: "Highway and airport runway asphalt paving, civil infrastructure waterproofing, roofing membrane manufacturing, and pipe coating."
+    },
+    {
+      name: "Sulphur (Granular / Bright Yellow)",
+      category: "Industrial Chemical",
+      icon: "Flame",
+      application: "Sulfuric acid production, phosphate fertilizer chemical manufacturing, rubber vulcanization, and chemical processing feedstocks."
+    },
+    {
+      name: "Urea 46% Nitrogen",
+      category: "Agricultural Fertilizer",
+      icon: "Wheat",
+      application: "Direct agricultural soil application, high-nitrogen crop nutrition, synthetic fertilizer blending, and industrial resin manufacturing."
+    },
+    {
+      name: "Di-Ammonium Phosphate (DAP)",
+      category: "Agricultural Fertilizer",
+      icon: "Wheat",
+      application: "Essential crop root development, high-concentration phosphorus soil enrichment, and commercial agriculture starter fertilizer."
+    },
+    {
+      name: "NPK Fertilizers (Custom)",
+      category: "Agricultural Fertilizer",
+      icon: "Wheat",
+      application: "Balanced multi-nutrient crop feeding (Nitrogen, Phosphorus, Potassium) tailored for targeted agricultural soil conditions and crop cycles."
+    }
+  ],
+  process: [
+    { title: "Buyer Inquiry & LOI", desc: "Buyer submits corporate specifications, required volume, target port/incoterms, and a formal Letter of Intent (LOI) / ICPO." },
+    { title: "Qualification & Documentation", desc: "Our desk verifies buyer readiness, passport/KYC credentials, and destination port feasibility." },
+    { title: "Introduction to Refinery", desc: "We introduce qualified buyers directly to the refinery-appointed sales representative or export desk." },
+    { title: "SPA Execution & Logistics", desc: "Buyer and refinery negotiate commercial terms directly, execute the SPA, and perform transaction banking." }
+  ],
+  whyUs: [
+    { title: "Transparent Introductions", desc: "Direct connection to legitimate refinery representatives without multi-tier broker chains." },
+    { title: "Structured Protocol", desc: "Standardized LOI/ICPO document vetting to ensure efficient communication with refinery desks." },
+    { title: "Strict Confidentiality", desc: "Buyer company data and commercial requirements are handled with strict NDA protection." }
+  ]
+};
+
+const IconHelper = ({ name, className }) => {
+  const icons = { Droplet, Flame, Wheat, Factory };
+  const Icon = icons[name] || Droplet;
+  return <Icon className={className} />;
+};
+
+const HeroBackground = () => (
+  <div className="absolute inset-0 overflow-hidden -z-10 bg-slate-50">
+    {/* Soft animated gradient orbs for a 'crystal/light' effect */}
+    <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-amber-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob"></div>
+    <div className="absolute top-[20%] right-[-10%] w-96 h-96 bg-slate-300/50 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000"></div>
+    <div className="absolute bottom-[-20%] left-[20%] w-96 h-96 bg-amber-100/50 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-4000"></div>
+    {/* Crystal grid overlay */}
+    <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEiIGZpbGw9InJnYmEoMCwwLDAsMC4wNSkiLz48L3N2Zz4=')] opacity-50"></div>
+  </div>
+);
+
+const Navbar = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  return (
+    <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white/80 backdrop-blur-md shadow-sm py-3' : 'bg-transparent py-5'}`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center">
+          <div className="flex-shrink-0 flex items-center gap-2 cursor-pointer" onClick={() => window.scrollTo(0,0)}>
+            <Globe2 className="h-8 w-8 text-amber-600" />
+            <span className="font-bold text-xl tracking-tight text-slate-900 uppercase">Caspera<span className="text-slate-500 font-light">Partners</span></span>
+          </div>
+          
+          <div className="hidden md:flex items-center space-x-8">
+            {SITE_CONFIG.nav.map((item) => (
+              <a key={item.label} href={item.href} className="text-sm font-medium text-slate-600 hover:text-amber-600 transition-colors">
+                {item.label}
+              </a>
+            ))}
+            <a href="#contact" className="px-5 py-2.5 bg-slate-900 text-white text-sm font-medium rounded-full hover:bg-amber-600 transition-all shadow-md hover:shadow-lg">
+              Contact Desk
+            </a>
+          </div>
+
+          <div className="md:hidden flex items-center">
+            <button onClick={() => setIsOpen(!isOpen)} className="text-slate-900 hover:text-amber-600">
+              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile menu */}
+      {isOpen && (
+        <div className="md:hidden absolute top-full left-0 w-full bg-white/95 backdrop-blur-md shadow-lg border-t border-slate-100 py-4 px-4 flex flex-col gap-4">
+          {SITE_CONFIG.nav.map((item) => (
+            <a key={item.label} href={item.href} onClick={() => setIsOpen(false)} className="block text-base font-medium text-slate-700 hover:text-amber-600">
+              {item.label}
+            </a>
+          ))}
+          <a href="#contact" onClick={() => setIsOpen(false)} className="w-full text-center px-5 py-3 bg-slate-900 text-white text-base font-medium rounded-lg hover:bg-amber-600 transition-colors">
+            Contact Desk
+          </a>
+        </div>
+      )}
+    </nav>
+  );
+};
+
+const Hero = () => (
+  <section id="home" className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+    <HeroBackground />
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center flex flex-col items-center">
+      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 backdrop-blur-md border border-slate-200/80 shadow-sm text-sm font-medium text-amber-700 mb-8 animate-fade-in-up">
+        <ShieldCheck className="w-4 h-4" />
+        Verified Global Introductions
+      </div>
+      
+      <h1 className="text-5xl md:text-7xl font-extrabold text-slate-900 tracking-tight max-w-4xl leading-tight mb-6 animate-fade-in-up" style={{animationDelay: '100ms'}}>
+        Connecting Global <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-amber-700">Energy Markets</span>
+      </h1>
+      
+      <p className="text-xl md:text-2xl text-slate-600 max-w-2xl mb-10 font-light animate-fade-in-up" style={{animationDelay: '200ms'}}>
+        Your trusted link to petroleum products, refined fuels, and essential agricultural commodities.
+      </p>
+      
+      <div className="flex flex-col sm:flex-row gap-4 mb-16 animate-fade-in-up" style={{animationDelay: '300ms'}}>
+        <a href="#products" className="px-8 py-4 bg-slate-900 text-white rounded-full font-medium hover:bg-slate-800 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
+          Explore Portfolio <ArrowRight className="w-4 h-4" />
+        </a>
+        <a href="#contact" className="px-8 py-4 bg-white text-slate-900 border border-slate-200 rounded-full font-medium hover:bg-slate-50 hover:border-amber-200 transition-all shadow-sm flex items-center justify-center gap-2">
+          Submit Inquiry
+        </a>
+      </div>
+
+      <div className="max-w-3xl p-6 bg-white/40 backdrop-blur-xl border border-white/60 rounded-2xl shadow-sm text-sm text-slate-600 leading-relaxed animate-fade-in-up" style={{animationDelay: '400ms'}}>
+        <strong className="text-slate-900">Facilitation Notice:</strong> {SITE_CONFIG.company.disclaimer}
+      </div>
+    </div>
+  </section>
+);
+
+const About = () => (
+  <section id="about" className="py-24 bg-white">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="text-center max-w-3xl mx-auto mb-16">
+        <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6">Structured Introductions in Global Energy</h2>
+        <p className="text-lg text-slate-600">
+          Caspera Partners provides verified introductions and transaction coordination between international petroleum buyers and authorized refinery export representatives.
+        </p>
+      </div>
+
+      <div className="grid md:grid-cols-3 gap-8">
+        {[
+          { title: "Direct Contracts", desc: "All Sales and Purchase Agreements (SPA) are executed directly between the buyer and the refinery seller of record.", icon: FileText },
+          { title: "Transparent Communication", desc: "We structure clear communications between buyer procurement desks and refinery trade representatives.", icon: Phone },
+          { title: "Non-Ownership Policy", desc: "Caspera Partners does not own commodities, store fuels, or process financial payments.", icon: ShieldCheck }
+        ].map((item, idx) => (
+          <div key={idx} className="p-8 rounded-2xl bg-slate-50 border border-slate-100 hover:shadow-md transition-shadow group">
+            <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center text-amber-600 mb-6 group-hover:scale-110 transition-transform">
+              <item.icon className="w-6 h-6" />
+            </div>
+            <h3 className="text-xl font-bold text-slate-900 mb-3">{item.title}</h3>
+            <p className="text-slate-600 leading-relaxed">{item.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+);
+
+const Products = () => (
+  <section id="products" className="py-24 bg-slate-50 relative">
+    <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+       <div className="absolute top-[30%] right-[-5%] w-96 h-96 bg-slate-200/50 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+    </div>
+    
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="text-center max-w-4xl mx-auto mb-16">
+        <h2 className="text-4xl font-bold text-slate-900 mb-6">Energy & Commodity Portfolio</h2>
+        <p className="text-xl text-slate-600 font-light">
+          Direct refinery introduction available for verified buyers across refined petroleum fuels, natural gas derivatives, and agricultural fertilizers.
+        </p>
+      </div>
+
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {SITE_CONFIG.products.map((product, idx) => (
+          <div key={idx} className="bg-white/80 backdrop-blur-md border border-slate-200/80 p-6 rounded-2xl shadow-sm hover:shadow-xl transition-all hover:-translate-y-1 group flex flex-col h-full">
+            <div className="flex items-start justify-between mb-4">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-xs font-medium text-slate-600">
+                <IconHelper name={product.icon} className="w-3 h-3 text-amber-500" />
+                {product.category}
+              </span>
+            </div>
+            <h3 className="text-xl font-bold text-slate-900 mb-3 group-hover:text-amber-600 transition-colors">{product.name}</h3>
+            <p className="text-sm text-slate-600 mb-6 flex-grow leading-relaxed">
+              <strong className="text-slate-800 block mb-1">Primary Application:</strong>
+              {product.application}
+            </p>
+            <a href={`#contact?product=${encodeURIComponent(product.name)}`} className="inline-flex items-center gap-2 text-sm font-semibold text-slate-900 group-hover:text-amber-600 transition-colors mt-auto">
+              Inquire Now <ChevronRight className="w-4 h-4" />
+            </a>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+);
+
+const ProcessAndWhy = () => (
+  <section id="process" className="py-24 bg-white">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="grid lg:grid-cols-2 gap-16">
+        
+        {/* Process */}
+        <div>
+          <h2 className="text-3xl font-bold text-slate-900 mb-10">Our 4-Step Facilitation</h2>
+          <div className="space-y-8">
+            {SITE_CONFIG.process.map((step, idx) => (
+              <div key={idx} className="flex gap-4">
+                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold shadow-md">
+                  {idx + 1}
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900 mb-2">{step.title}</h3>
+                  <p className="text-slate-600">{step.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Why Us */}
+        <div className="bg-slate-50 p-8 md:p-10 rounded-3xl border border-slate-100">
+          <h2 className="text-3xl font-bold text-slate-900 mb-10">Why Caspera Partners</h2>
+          <div className="space-y-6">
+            {SITE_CONFIG.whyUs.map((item, idx) => (
+              <div key={idx} className="flex gap-4 p-4 rounded-xl bg-white border border-slate-100 shadow-sm">
+                <CheckCircle2 className="w-6 h-6 text-amber-500 flex-shrink-0 mt-0.5" />
+                <div>
+                  <h3 className="font-bold text-slate-900 mb-1">{item.title}</h3>
+                  <p className="text-sm text-slate-600">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+);
+
+const Contact = () => {
+  const [formData, setFormData] = useState({ name: '', company: '', email: '', phone: '', product: '', volume: '', port: '', message: '' });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Simulate submission
+    alert("Inquiry simulated for preview. In production, this would connect to your backend.");
+  };
+
+  return (
+    <section id="contact" className="py-24 bg-slate-900 text-white relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-1/2 h-full bg-slate-800/50 skew-x-12 transform origin-top-right -z-10"></div>
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          
+          <div>
+            <h2 className="text-4xl font-bold mb-6 text-white">Initiate an Inquiry</h2>
+            <p className="text-slate-400 text-lg mb-10 font-light">
+              Submit your preliminary requirements below. Our desk will review and contact you to discuss documentation (LOI/ICPO) and next steps.
+            </p>
+            
+            <div className="space-y-6">
+              <div className="flex items-center gap-4 text-slate-300">
+                <div className="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center"><Mail className="w-5 h-5 text-amber-500" /></div>
+                <span>{SITE_CONFIG.company.email}</span>
+              </div>
+              <div className="flex items-center gap-4 text-slate-300">
+                <div className="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center"><Phone className="w-5 h-5 text-amber-500" /></div>
+                <span>{SITE_CONFIG.company.phone}</span>
+              </div>
+              <div className="flex items-center gap-4 text-slate-300">
+                <div className="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center"><MapPin className="w-5 h-5 text-amber-500" /></div>
+                <span>{SITE_CONFIG.company.location}</span>
+              </div>
+            </div>
+          </div>
+
+          <form onSubmit={handleSubmit} className="bg-white p-8 rounded-3xl shadow-2xl text-slate-900">
+            <h3 className="text-2xl font-bold mb-6">Inquiry Form</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+              <input type="text" placeholder="Full Name" required className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500" onChange={e => setFormData({...formData, name: e.target.value})} />
+              <input type="text" placeholder="Company Name" required className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500" onChange={e => setFormData({...formData, company: e.target.value})} />
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+              <input type="email" placeholder="Business Email" required className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500" onChange={e => setFormData({...formData, email: e.target.value})} />
+              <input type="tel" placeholder="Phone / WhatsApp" required className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500" onChange={e => setFormData({...formData, phone: e.target.value})} />
+            </div>
+            <div className="mb-4">
+              <select required className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500 text-slate-600" onChange={e => setFormData({...formData, product: e.target.value})}>
+                <option value="">Select Product of Interest...</option>
+                {SITE_CONFIG.products.map((p, i) => <option key={i} value={p.name}>{p.name}</option>)}
+              </select>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+              <input type="text" placeholder="Target Volume (MT/BBL)" required className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500" onChange={e => setFormData({...formData, volume: e.target.value})} />
+              <input type="text" placeholder="Destination Port (CIF/FOB)" required className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500" onChange={e => setFormData({...formData, port: e.target.value})} />
+            </div>
+            <div className="mb-6">
+              <textarea placeholder="Message / Details" rows="4" className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none" onChange={e => setFormData({...formData, message: e.target.value})}></textarea>
+            </div>
+            <button type="submit" className="w-full py-4 bg-slate-900 text-white rounded-xl font-bold hover:bg-amber-600 transition-colors shadow-lg flex justify-center items-center gap-2">
+              Submit Inquiry <Send className="w-4 h-4" />
+            </button>
+          </form>
+
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const Footer = () => (
+  <footer className="bg-slate-950 text-slate-400 py-12 border-t border-slate-900">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="grid md:grid-cols-2 gap-8 mb-8 pb-8 border-b border-slate-800">
+        <div>
+          <div className="flex items-center gap-2 mb-4">
+            <Globe2 className="h-6 w-6 text-amber-600" />
+            <span className="font-bold text-lg text-white uppercase tracking-tight">Caspera<span className="font-light">Partners</span></span>
+          </div>
+          <p className="text-sm max-w-sm mb-4">
+            {SITE_CONFIG.company.tagline}
+          </p>
+        </div>
+        <div className="text-xs leading-relaxed opacity-80 text-slate-500">
+          <strong className="text-slate-300 block mb-1">Disclaimer:</strong> 
+          {SITE_CONFIG.company.disclaimer}
+        </div>
+      </div>
+      <div className="flex flex-col md:flex-row justify-between items-center text-sm gap-4">
+        <p>&copy; {new Date().getFullYear()} {SITE_CONFIG.company.name}. All rights reserved.</p>
+        <div className="flex gap-6">
+          <a href="#" className="hover:text-amber-500 transition-colors">Privacy Policy</a>
+          <a href="#" className="hover:text-amber-500 transition-colors">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+);
+
+export default function App() {
+  return (
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-amber-200 selection:text-slate-900">
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes blob {
+          0% { transform: translate(0px, 0px) scale(1); }
+          33% { transform: translate(30px, -50px) scale(1.1); }
+          66% { transform: translate(-20px, 20px) scale(0.9); }
+          100% { transform: translate(0px, 0px) scale(1); }
+        }
+        .animate-blob { animation: blob 10s infinite alternate; }
+        .animation-delay-2000 { animation-delay: 2s; }
+        .animation-delay-4000 { animation-delay: 4s; }
+        @keyframes fadeInUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-up {
+          animation: fadeInUp 0.8s ease-out forwards;
+          opacity: 0;
+        }
+        html { scroll-behavior: smooth; }
+      `}} />
+      <Navbar />
+      <Hero />
+      <About />
+      <Products />
+      <ProcessAndWhy />
+      <Contact />
+      <Footer />
+    </div>
+  );
+}
